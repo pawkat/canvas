@@ -1,0 +1,16 @@
+---
+title: Index page
+---
+{% extends "layouts/_layout.html" %}
+
+{% block content %}
+	
+	<div class="canvas">
+    {% for i in range(1, 101) %}
+      <div class="p p{{i}}"></div>
+    {% endfor %}
+
+  </div>
+<canvas width="800" height="600" id="canvas"></canvas>
+
+{% endblock %}

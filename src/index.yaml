@@ -1,5 +1,5 @@
 ProjectTitle: canvas
 
 PageList:
-- file: page.html
+- file: triangles.html
   ready: 50

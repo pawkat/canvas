@@ -3,3 +3,7 @@ ProjectTitle: canvas
 PageList:
 - file: triangles.html
   ready: 50
+- file: ballz.html
+  ready: 50
+- file: paint.html
+  ready: 50

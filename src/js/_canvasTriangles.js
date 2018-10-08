@@ -1,7 +1,7 @@
 import {TimelineMax} from "gsap";
 export default class Triangles {
   constructor() {
-    this.canvas = document.querySelector("#canvas");
+    this.canvas = document.querySelector("#triangles");
     this.context = this.canvas.getContext("2d");
     this.context.lineWidth = 1;
     this.context.strokeStyle = '#666666';

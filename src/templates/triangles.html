@@ -1,14 +1,14 @@
 ---
-title: Index page
+title: Triangles page
 ---
 {% extends "layouts/_layout.html" %}
 
 {% block content %}
 
 
-<canvas width="1600" height="1200" id="canvas"></canvas>
+<canvas width="1600" height="1200" id="triangles" class="triangles"></canvas>
 
-<div class="canvas">
+<div class="canvas triangles">
   {% for i in range(1, 103) %}
     <div class="p p{{i}}"></div>
   {% endfor %}

@@ -83,10 +83,8 @@ export default class Paint {
         let y = e.clientY;
         if (e.type === 'touchmove') {
           e.preventDefault();
-          // console.dir(e);
-          x = e.touches[0].clientX  - this.controlsBarWidth;
+          x = e.touches[0].clientX - this.controlsBarWidth;
           y = e.touches[0].clientY;
-          console.log(`x: ${x}, y: ${y}`);
 
         }
 
@@ -104,12 +102,14 @@ export default class Paint {
     });
   }
 
-  _clear() {
+  _clear(celarMemory) {
     this.ctx.rect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.fillStyle = '#ffffff';
     this.ctx.fill();
     this.ctx.beginPath();
-    this.memory = [];
+    if (celarMemory) {
+      this.memory = [];
+    }
   }
 
   _save() {
@@ -119,7 +119,7 @@ export default class Paint {
 
   _replay() {
     let memory = JSON.parse(localStorage.getItem('memory'));
-    this._clear();
+    this._clear(true);
     let timer = setInterval(() => {
       if (!memory.length) {
         clearInterval(timer);
@@ -132,12 +132,33 @@ export default class Paint {
     }, 30);
   }
 
+  _back() {
+    let lastUp = this.memory.lastIndexOf('mouseup');
+    console.log(this.memory, lastUp);
+    if (lastUp === this.memory.length - 1) {
+      this.memory.splice(lastUp, 1);
+      lastUp = this.memory.lastIndexOf('mouseup');
+    }
+    if (lastUp < 0) {
+      this.memory = [];
+      this._clear();
+    } else {
+      this.memory.splice(lastUp, this.memory.length - lastUp);
+      this._clear();
+      $(this.memory).each((i, el) => {
+        this._render(el.x, el.y, el.lineWidth, el.fill);
+      });
+    }
+
+
+  }
+
   _actions() {
     let self = this;
 
     let clear = document.getElementById('clear');
     clear.addEventListener('click', () => {
-      this._clear();
+      this._clear(true);
     });
 
     let save = document.getElementById('save');
@@ -150,11 +171,16 @@ export default class Paint {
       this._replay();
     });
 
-    this.lineWidthInput.on('change', function() {
+    let back = document.getElementById('back');
+    back.addEventListener('click', () => {
+      this._back();
+    });
+
+    this.lineWidthInput.on('change', function () {
       self.settings.lineWidth = this.value;
     });
 
-    this.colorInput.on('change', function() {
+    this.colorInput.on('change', function () {
       self.settings.fill = this.value;
     });
   }

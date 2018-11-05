@@ -6,9 +6,20 @@
 		line-height: 1.2
 		color: #FFFFFF
 		font-family: Arial, "Helvetica Neue", Helvetica, sans-serif
+		margin-bottom: 20px
 	&__controls
 		width: 100px
 		background-color: blueviolet
 		padding-top: 10px
 	canvas
 		display: block
+	&__actions
+		display: flex
+		flex-direction: column
+		padding: 0 5px
+		.btn
+			&:not(:last-child)
+				margin-bottom: 10px
+	.rangeslider
+		&:not(:last-child)
+			margin-bottom: 10px

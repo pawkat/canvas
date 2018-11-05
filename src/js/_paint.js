@@ -3,15 +3,20 @@ export default class Paint {
     this.canvas = document.getElementById('paint');
     this.ctx = this.canvas.getContext('2d');
     this.ctx.strokeWidth = 0;
+    this.lineWidthInput = $('.js-paint-line-width');
+    this.lineWidth = this.lineWidthInput[0].value;
+    this.colorInput = $('.js-paint-color');
+    this.fill = this.colorInput[0].value;
     this.settings = {
-      fill: '#000000',
-      lineWidth: 20
+      fill: this.fill,
+      lineWidth: this.lineWidth
     };
     this.arcRadius = this.settings.lineWidth / 2;
     this.isMouseDown = false;
-    this.controlsBarWidth = 100;
 
-    this.coords = [];
+    this.controlsBarWidth = 100;
+    this.memory = [];
+    this.bar = $('.js-paint-bar');
     this.init();
   }
 
@@ -21,11 +26,11 @@ export default class Paint {
     this._detectMouse();
     this._mouseEvents();
     this._draw();
-    this._buttonsEvents();
+    this._actions();
   }
 
   _setSize() {
-    this.canvas.width = window.innerWidth - 100;
+    this.canvas.width = window.innerWidth - this.bar.width();
     this.canvas.height = window.innerHeight;
   }
 
@@ -36,18 +41,18 @@ export default class Paint {
   }
 
   _detectMouse() {
-    this.canvas.addEventListener('mousedown', () => {
+    $(this.canvas).on('mousedown touchstart', () => {
       this.isMouseDown = true;
     });
-    this.canvas.addEventListener('mouseup', () => {
+    $(this.canvas).on('mouseup ', () => {
       this.isMouseDown = false;
     });
   }
 
   _mouseEvents() {
-    this.canvas.addEventListener('mouseup', () => {
+    $(this.canvas).on('mouseup touchend', () => {
       this.ctx.beginPath();
-      this.coords.push('mouseup');
+      this.memory.push('mouseup');
     });
   }
 
@@ -71,14 +76,28 @@ export default class Paint {
   }
 
   _draw() {
-    this.canvas.addEventListener('mousemove', (e) => {
-
+    $(this.canvas).on('mousemove touchmove', (e) => {
 
       if (this.isMouseDown) {
         let x = e.clientX - this.controlsBarWidth;
         let y = e.clientY;
+        if (e.type === 'touchmove') {
+          e.preventDefault();
+          // console.dir(e);
+          x = e.touches[0].clientX  - this.controlsBarWidth;
+          y = e.touches[0].clientY;
+          console.log(`x: ${x}, y: ${y}`);
 
-        this.coords.push([x, y]);
+        }
+
+        this.memory.push(
+          {
+            x: x,
+            y: y,
+            lineWidth: this.settings.lineWidth,
+            fill: this.settings.fill
+          }
+        );
 
         this._render(x, y, this.settings.lineWidth, this.settings.fill);
       }
@@ -90,33 +109,32 @@ export default class Paint {
     this.ctx.fillStyle = '#ffffff';
     this.ctx.fill();
     this.ctx.beginPath();
+    this.memory = [];
   }
 
   _save() {
-    let settings = JSON.stringify(this.settings);
-    let coords = JSON.stringify(this.coords);
-    localStorage.setItem('settings', settings);
-    localStorage.setItem('coords', coords);
+    let memory = JSON.stringify(this.memory);
+    localStorage.setItem('memory', memory);
   }
 
   _replay() {
-    let settings = JSON.parse(localStorage.getItem('settings'));
-    let coords = JSON.parse(localStorage.getItem('coords'));
+    let memory = JSON.parse(localStorage.getItem('memory'));
     this._clear();
     let timer = setInterval(() => {
-      if (!coords.length) {
+      if (!memory.length) {
         clearInterval(timer);
         this.ctx.beginPath();
         return;
       }
-      let coord = coords.shift();
-      console.log(coord[0], coord[1]);
-      this._render(coord[0], coord[1], settings.lineWidth, settings.fill);
+      let step = memory.shift();
+      this._render(step.x, step.y, step.lineWidth, step.fill);
 
     }, 30);
   }
 
-  _buttonsEvents() {
+  _actions() {
+    let self = this;
+
     let clear = document.getElementById('clear');
     clear.addEventListener('click', () => {
       this._clear();
@@ -130,6 +148,14 @@ export default class Paint {
     let replay = document.getElementById('replay');
     replay.addEventListener('click', () => {
       this._replay();
+    });
+
+    this.lineWidthInput.on('change', function() {
+      self.settings.lineWidth = this.value;
+    });
+
+    this.colorInput.on('change', function() {
+      self.settings.fill = this.value;
     });
   }
 }

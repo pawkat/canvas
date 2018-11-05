@@ -2,6 +2,8 @@ import cssTriangles from './_cssTriangles';
 import Triangles from './_canvasTriangles';
 import Ballz from './_ballz';
 import Paint from './_paint';
+import Squares from './_squares';
+
 
 
 if ($('#triangles').length) {
@@ -13,6 +15,9 @@ if ($('#ballz').length) {
 }
 if ($('#paint').length) {
   let paint = new Paint;
+}
+if ($('#squares').length) {
+  let squares = new Squares();
 }
 
 

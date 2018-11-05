@@ -7,3 +7,5 @@ PageList:
   ready: 50
 - file: paint.html
   ready: 50
+- file: squares.html
+  ready: 50

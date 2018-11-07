@@ -18,7 +18,6 @@ if ($('#paint').length) {
 }
 if ($('#squares').length) {
   let squares = new Squares();
-  // var gui = new dat.GUI({name: 'My GUI'});
 }
 
 

@@ -35,47 +35,49 @@ export default class Squares {
   _renderSquare(t, w, h, fill1, fill2) {
     let ctx = this.ctx;
 
-    let startW = this.centerW - (w / 2);
-    let startH = this.centerH - (h / 2) - 100;
-    // let startW = w / 2;
-    // let startH = (h / 2) - 100;
+    // let startW = this.centerW - (w / 2);
+    // let startH = this.centerH - (h / 2) - 100;
+    // let startH = this.centerH - (h / 2);
+    let startW = w / 2;
+    let startH = h / 2;
 
     let grd, x, y, w1, h1;
 
-    // ctx.save();
+    ctx.save();
 
-    // x = startW;
-    // y = startH;
-    // w1 = w;
-    // h1 = h;
-    if (t <= this.firstStep) {
-      x = startW;
-      y = startH + (t * 2);
-      w1 = w;
-      h1 = (h * 1.5) - ((t / this.firstStep) * (h / 2));
-    } else if (t > this.firstStep && t <= this.secondStep) {
-      x = startW - t + this.firstStep;
-      y = startH + (this.firstStep * 2);
-      w1 = w;
-      h1 = h;
-    } else {
-      x = startW - (this.secondStep + this.firstStep) + t;
-      y = startH + (this.firstStep * 2);
-      w1 = w;
-      h1 = h;
-    }
+    x = startW;
+    y = startH;
+    w1 = w;
+    h1 = h;
+    // if (t <= this.firstStep) {
+    //   x = startW;
+    //   y = startH + (t * 2);
+    //   w1 = w;
+    //   h1 = (h * 1.5) - ((t / this.firstStep) * (h / 2));
+    // } else if (t > this.firstStep && t <= this.secondStep) {
+    //   x = startW - t + this.firstStep;
+    //   y = startH + (this.firstStep * 2);
+    //   w1 = w;
+    //   h1 = h;
+    // } else {
+    //   x = startW - (this.secondStep + this.firstStep) + t;
+    //   y = startH + (this.firstStep * 2);
+    //   w1 = w;
+    //   h1 = h;
+    // }
 
     // ctx.translate(this.centerW, this.centerH - startH - h1);
-    // ctx.translate(this.centerW, this.centerH);
-    // ctx.rotate(t*2 * Math.PI/180);
+    ctx.translate(this.centerW , this.centerH );
+    ctx.rotate(t*2 * Math.PI/180);
 
     grd = ctx.createLinearGradient(w1 / 2, y, w1 / 2, y + h1);
     grd.addColorStop(0, fill1);
     grd.addColorStop(1, fill2);
     ctx.fillStyle = grd;
-    ctx.fillRect(x, y, w1, h1);
+    // ctx.fillRect(x, y, w1, h1);
+    ctx.fillRect(-w1/2, -h1/2, w1, h1);
 
-    // ctx.restore();
+    ctx.restore();
   }
   _initSquares(t, w ,h) {
     let ctx = this.ctx;
@@ -86,12 +88,6 @@ export default class Squares {
     this._renderSquare(t, w * 1.25, h * 1.25, 'rgba(53, 98, 242, 1.000)', 'rgba(112, 31, 212, 1.000)');
     this._renderSquare(t, w, h, 'rgba(255, 182, 6, 1.000)', 'rgba(255, 4, 115, 1.000)');
     // this._renderSquare(t, w, h, 'black', 'red');
-
-    // ctx.translate(this.canvas.width/2, this.canvas.height/2);
-    // ctx.rotate(Math.PI / 180);
-    // grd.addColorStop(1.000, 'rgba(11, 2, 170, 1.000)');
-    // ctx.rotate(t/40);
-    // $(this.canvas).css('transform', `rotate(${t}deg)`);
 
   }
 

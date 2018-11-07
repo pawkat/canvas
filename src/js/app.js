@@ -3,7 +3,7 @@ import Triangles from './_canvasTriangles';
 import Ballz from './_ballz';
 import Paint from './_paint';
 import Squares from './_squares';
-
+// import dat from 'dat.GUI';
 
 
 if ($('#triangles').length) {
@@ -18,6 +18,7 @@ if ($('#paint').length) {
 }
 if ($('#squares').length) {
   let squares = new Squares();
+  // var gui = new dat.GUI({name: 'My GUI'});
 }
 
 

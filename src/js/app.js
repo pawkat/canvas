@@ -4,6 +4,7 @@ import Ballz from './_ballz';
 import Paint from './_paint';
 import Squares from './_squares';
 import Cursor from './_cursor';
+import Waves from './_waves';
 // import dat from 'dat.GUI';
 
 
@@ -22,6 +23,9 @@ if ($('#squares').length) {
 }
 if ($('#cursor').length) {
   let cursor = new Cursor();
+}
+if ($('#waves').length) {
+  let waves = new Waves($('.js-image'));
 }
 
 

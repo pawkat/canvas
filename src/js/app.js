@@ -3,6 +3,7 @@ import Triangles from './_canvasTriangles';
 import Ballz from './_ballz';
 import Paint from './_paint';
 import Squares from './_squares';
+import Cursor from './_cursor';
 // import dat from 'dat.GUI';
 
 
@@ -18,6 +19,9 @@ if ($('#paint').length) {
 }
 if ($('#squares').length) {
   let squares = new Squares();
+}
+if ($('#cursor').length) {
+  let cursor = new Cursor();
 }
 
 

@@ -9,3 +9,5 @@ PageList:
   ready: 50
 - file: squares.html
   ready: 50
+- file: cursor.html
+  ready: 50

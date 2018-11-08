@@ -10,7 +10,11 @@ export default class Squares {
     this.squareH = 50;
     this.time = 200;
     this.firstStep = this.time / 4;
+    this.firstStepLength = 100;
+    this.secondStep = this.time / 4;
+    this.secondStepLength = 50;
     this.secondStep = this.time / 2;
+    this.thirdStepLength = 200;
 
     this.init();
   }
@@ -35,49 +39,77 @@ export default class Squares {
   _renderSquare(t, w, h, fill1, fill2) {
     let ctx = this.ctx;
 
-    // let startW = this.centerW - (w / 2);
+    let startW = this.centerW - (w / 2);
     // let startH = this.centerH - (h / 2) - 100;
-    // let startH = this.centerH - (h / 2);
-    let startW = w / 2;
-    let startH = h / 2;
+    let startH = this.centerH - (h / 2);
+    // let startW = w / 2;
+    // let startH = h / 2;
 
-    let grd, x, y, w1, h1;
+    let grd, x, y, w1, h1, percentage;
 
-    ctx.save();
 
-    x = startW;
-    y = startH;
-    w1 = w;
-    h1 = h;
-    // if (t <= this.firstStep) {
-    //   x = startW;
-    //   y = startH + (t * 2);
-    //   w1 = w;
-    //   h1 = (h * 1.5) - ((t / this.firstStep) * (h / 2));
-    // } else if (t > this.firstStep && t <= this.secondStep) {
-    //   x = startW - t + this.firstStep;
-    //   y = startH + (this.firstStep * 2);
-    //   w1 = w;
-    //   h1 = h;
-    // } else {
-    //   x = startW - (this.secondStep + this.firstStep) + t;
-    //   y = startH + (this.firstStep * 2);
-    //   w1 = w;
-    //   h1 = h;
-    // }
+    // x = startW;
+    // y = startH;
+    // w1 = w;
+    // h1 = h;
+    if (t <= this.firstStep) {
+      percentage = t / this.firstStep;
+      x = startW;
+      y = startH + (t * 2);
+      w1 = w;
+      h1 = (h * 1.5) - ((t / this.firstStep) * (h / 2));
+    } else if (t > this.firstStep && t <= this.secondStep) {
+      ctx.save();
+      x = startW - t + this.firstStep;
+      y = startH + (this.firstStep * 2);
+      w1 = w;
+      h1 = h;
+    } else {
+      ctx.save();
+      x = startW - (this.secondStep + this.firstStep) + t;
+      y = startH + (this.firstStep * 2);
+      w1 = w;
+      h1 = h;
+    }
 
-    // ctx.translate(this.centerW, this.centerH - startH - h1);
-    ctx.translate(this.centerW , this.centerH );
-    ctx.rotate(t*2 * Math.PI/180);
+    if (t <= this.firstStep) {
+      grd = ctx.createLinearGradient(w1 / 2, y, w1 / 2, y + h1);
+      grd.addColorStop(0, fill1);
+      grd.addColorStop(1, fill2);
+      ctx.fillStyle = grd;
+      ctx.fillRect(x, y, w1, h1);
+    } else if (t > this.firstStep && t <= this.secondStep) {
+      grd = ctx.createLinearGradient(-w1/2, -h1/2, -w1/2, -h1/2 + h1);
+      grd.addColorStop(0, fill1);
+      grd.addColorStop(1, fill2);
+      ctx.fillStyle = grd;
 
-    grd = ctx.createLinearGradient(w1 / 2, y, w1 / 2, y + h1);
-    grd.addColorStop(0, fill1);
-    grd.addColorStop(1, fill2);
-    ctx.fillStyle = grd;
-    // ctx.fillRect(x, y, w1, h1);
-    ctx.fillRect(-w1/2, -h1/2, w1, h1);
+      ctx.translate(this.centerW - t + this.firstStep, this.centerH + (this.firstStep * 2));
+      let deg = t - this.firstStep;
+      let rad = deg * Math.PI/180;
+      ctx.rotate(-rad);
+      ctx.fillRect(-w1/2, -h1/2, w1, h1);
 
-    ctx.restore();
+      ctx.restore();
+    } else {
+      grd = ctx.createLinearGradient(-w1/2, -h1/2, -w1/2, -h1/2 + h1);
+      grd.addColorStop(0, fill1);
+      grd.addColorStop(1, fill2);
+      ctx.fillStyle = grd;
+
+      ctx.translate(this.centerW - (this.secondStep + this.firstStep) + t, this.centerH + (this.firstStep * 2));
+      let deg = 1;
+      let rad = deg * Math.PI/180;
+      ctx.rotate(t*2 * Math.PI/180);
+      ctx.fillRect(-w1/2, -h1/2, w1, h1);
+
+      ctx.restore();
+    }
+
+
+
+
+
   }
   _initSquares(t, w ,h) {
     let ctx = this.ctx;
@@ -96,7 +128,7 @@ export default class Squares {
     let self = this;
 
     (function() {
-      var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+      let requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
         window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
       window.requestAnimationFrame = requestAnimationFrame;
     })();

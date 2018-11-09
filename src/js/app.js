@@ -5,6 +5,8 @@ import Paint from './_paint';
 import Squares from './_squares';
 import Cursor from './_cursor';
 import Waves from './_waves';
+import Twist from './twist';
+import Logo from './logo';
 // import dat from 'dat.GUI';
 
 
@@ -27,5 +29,10 @@ if ($('#cursor').length) {
 if ($('#waves').length) {
   let waves = new Waves($('.js-image'));
 }
-
+if ($('.twist').length) {
+  let waves = new Twist($('.twist'));
+}
+if ($('.twist').length) {
+  let logo = new Logo($('.logo'));
+}
 

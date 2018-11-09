@@ -59,6 +59,7 @@
     "lint-staged": "^7.0.4",
     "lodash": "^4.3.0",
     "lost": "^7.1.0",
+    "pixi-filters": "^2.6.1",
     "pixi.js": "^4.8.2",
     "postcss-csso": "^3.0.0",
     "require-dir": "^1.0.0",

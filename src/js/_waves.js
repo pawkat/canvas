@@ -1,5 +1,5 @@
 import 'pixi.js';
-import {TimelineMax} from "gsap";
+import {TimelineMax} from 'gsap';
 
 export default class Waves {
   constructor($wrapper) {
@@ -78,7 +78,7 @@ export default class Waves {
   }
 
   _doWaves() {
-    this.displacementSprite.x += .5;
+    this.displacementSprite.y += 0.5;
   }
 
   _showImage() {

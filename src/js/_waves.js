@@ -64,7 +64,7 @@ export default class Waves {
         self.mouseOn = true;
         TweenMax.ticker.addEventListener('tick', self._doWaves, self);
         let tl = new TimelineMax();
-        tl.to(self.displacementFilter.scale, 2, {x: 30, y: 30});
+        tl.to(self.displacementFilter.scale, 2, {x: 50, y: 50});
       }
     });
     this.wrapper.on('mouseout', () => {
@@ -98,7 +98,7 @@ export default class Waves {
       console.log(this.container.children);
       let tl = new TimelineMax();
       tl.to(this.container.children[0], 1, {alpha: 0, visible: false})
-        .to(this.container.children[1], .5, {alpha: 1, visible: true}, 0);
+        .to(this.container.children[1], 1, {alpha: 1, visible: true});
     });
 
   }

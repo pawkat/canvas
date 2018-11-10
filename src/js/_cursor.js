@@ -27,9 +27,14 @@ export default class _cursor {
         fill2: '0, 0, 0',
       },
     ];
+
+
     this.inertion = 0.1;
-    this.shadowInertion = 0.00025;
-    // this.shadowInertion = 0.0002;
+
+    this.shadowsQuantity = 4;
+    // this.shadowInertion = 0.0005;
+    this.shadowInertion = 0.001;
+    this.shadowInertionStep = 0.0009;
     this.init();
   }
 
@@ -91,31 +96,29 @@ export default class _cursor {
       y1 += conf.defaultTranslateY - (differenceY * 0.3);
     }
 
+    for (let i = this.shadowsQuantity; i > 0; i--) {
+      let selfInertion = (this.shadowInertion + (this.shadowsQuantity - i) * this.shadowInertionStep);
+      // console.log(selfInertion, differenceX, differenceX * selfInertion);
+      //square shadow 1
+      let grd1;
+      // let shadowTranslateX = x1 + w/10;
+      // let shadowTranslateY = y1 + h/10;
+      let shadow1TranslateX, shadow1TranslateY;
+      if (differenceX > 0) shadow1TranslateX = x1 - (Math.pow(differenceX, 2) * (this.shadowInertion + (this.shadowsQuantity - i) * this.shadowInertionStep));
+      else shadow1TranslateX = x1 + (Math.pow(differenceX, 2) * (this.shadowInertion + (this.shadowsQuantity - i) * this.shadowInertionStep));
+      if (differenceY > 0) shadow1TranslateY = y1 - (differenceY * differenceY * (this.shadowInertion + (this.shadowsQuantity - i) * this.shadowInertionStep));
+      else shadow1TranslateY = y1 + (Math.pow(differenceY, 2) * (this.shadowInertion + (this.shadowsQuantity - i) * this.shadowInertionStep));
+      grd1 = ctx.createLinearGradient(w / 2, shadow1TranslateY, w / 2, shadow1TranslateY + h);
+      grd1.addColorStop(0, `rgba(${fill1}, .2 )`);
+      grd1.addColorStop(1, `rgba(${fill2}, .2 )`);
+      // grd1.addColorStop(0, `rgba(0, 0, 0, .${i * 2 + 1})`);
+      // grd1.addColorStop(1, `rgba(0, 0, 0, .${i * 2 + 1})`);
 
-    //square shadow 1
-    let grd1;
-    // let shadowTranslateX = x1 + w/10;
-    // let shadowTranslateY = y1 + h/10;
-    let shadow1TranslateX, shadow1TranslateY;
-    if (differenceX > 0) shadow1TranslateX = x1 - (differenceX * differenceX * this.shadowInertion);
-    else shadow1TranslateX = x1 + (differenceX * differenceX * this.shadowInertion);
-    if (differenceY > 0) shadow1TranslateY = y1 - (differenceY * differenceY * this.shadowInertion);
-    else shadow1TranslateY = y1 + (differenceY * differenceY * this.shadowInertion);
-    grd1 = ctx.createLinearGradient(w / 2, shadow1TranslateY, w / 2, shadow1TranslateY + h);
-    grd1.addColorStop(0, `rgba(${fill1}, .5)`);
-    grd1.addColorStop(1, `rgba(${fill2}, .5)`);
-    ctx.fillStyle = grd1;
-    ctx.fillRect(shadow1TranslateX, shadow1TranslateY, w, h);
+      ctx.fillStyle = grd1;
+      ctx.fillRect(shadow1TranslateX, shadow1TranslateY, w, h);
+    }
 
-    // //square shadow 2
-    // let grd2;
-    // let shadow2TranslateX = x1 + (differenceX * differenceX * 0.00012);
-    // let shadow2TranslateY = y1 + (differenceY * differenceY * 0.00012);
-    // grd2 = ctx.createLinearGradient(w / 2, shadow2TranslateY, w / 2, shadow2TranslateY + h);
-    // grd2.addColorStop(0, `rgba(${fill1}, .2)`);
-    // grd2.addColorStop(1, `rgba(${fill2}, .2)`);
-    // ctx.fillStyle = grd2;
-    // ctx.fillRect(shadow2TranslateX, shadow2TranslateY, w, h);
+
 
 
 

@@ -7,7 +7,7 @@ PageList:
   ready: 50
 - file: paint.html
   ready: 50
-- file: squares.html
+- file: preloader.html
   ready: 50
 - file: whiteweb.html
   ready: 50

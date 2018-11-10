@@ -53,6 +53,7 @@ export default class Squares {
     // w1 = w;
     // h1 = h;
     if (t <= this.firstStep) {
+      // this.firstStepLength
       percentage = t / this.firstStep;
       x = startW;
       y = startH + (t * 2);

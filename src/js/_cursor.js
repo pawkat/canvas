@@ -10,6 +10,15 @@ export default class _cursor {
       {
         x: window.innerWidth / 2,
         y: window.innerHeight / 2,
+        w: 10,
+        h: 10,
+        fill1: '9, 9, 14',
+        fill2: '0, 0, 0',
+        shadowMaxTranslate: 12000
+      },
+      {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
         w: 40,
         h: 40,
         fill1: '255, 167, 12',
@@ -17,25 +26,19 @@ export default class _cursor {
         translate: true,
         defaultTranslateX: 40,
         defaultTranslateY: 40,
+        shadowMaxTranslate: 7500
       },
-      {
-        x: window.innerWidth / 2,
-        y: window.innerHeight / 2,
-        w: 10,
-        h: 10,
-        fill1: '9, 9, 14',
-        fill2: '0, 0, 0',
-      },
+
     ];
 
 
     this.mainInertia = 0.1;
 
-    this.shadowsQuantity = 4;
+    this.shadowsQuantity = 5;
     // this.shadowInertia = 0.0005;
     this.shadowInertia = 0.001;
     this.shadowInertiaStep = 0.0009;
-    this.shadowMaxTranslate = 7500;
+    // this.shadowMaxTranslate = 7500;
     this.init();
   }
 
@@ -76,66 +79,66 @@ export default class _cursor {
   }
 
   _renderCursor(conf, i) {
-    let ctx = this.ctx;
-    let x = conf.x,
-      y = conf.y,
+    const ctx = this.ctx,
       w = conf.w,
       h = conf.h,
       fill1 = conf.fill1,
-      fill2 = conf.fill2;
+      fill2 = conf.fill2,
+      translate = conf.translate,
+      defaultTranslateX = conf.defaultTranslateX,
+      defaultTranslateY = conf.defaultTranslateY,
+      shadowMaxTranslate = conf.shadowMaxTranslate;
+    let x = conf.x,
+      y = conf.y;
 
-    let difference = {
+    let diff = {
       x: this.cursor.x - x,
       y: this.cursor.y - y
     };
-    // let differenceX = this.cursor.x - x;
-    // let differenceY = this.cursor.y - y;
-    x += difference.x * this.mainInertia;
-    y += difference.y * this.mainInertia;
+
+    x += diff.x * this.mainInertia;
+    y += diff.y * this.mainInertia;
     this.sqares[i].x = x;
     this.sqares[i].y = y;
     let x1 = x - w / 2;
     let y1 = y - h / 2;
-    if (conf.translate) {
-      x1 += conf.defaultTranslateX - (difference.x * 0.3);
-      y1 += conf.defaultTranslateY - (difference.y * 0.3);
+    if (translate) {
+      x1 += defaultTranslateX - (diff.x * 0.3);
+      y1 += defaultTranslateY - (diff.y * 0.3);
     }
 
     //render shadow
     for (let i = this.shadowsQuantity; i > 0; i--) {
       let inertia = this.shadowInertia + (this.shadowsQuantity - i) * this.shadowInertiaStep;
 
-      const difX = Math.pow(difference.x, 2);
-      const difY = Math.pow(difference.y, 2);
+      const diffX = Math.pow(diff.x, 2);
+      const diffY = Math.pow(diff.y, 2);
 
-      let shadowDifference = {
-        x: difX > this.shadowMaxTranslate ? this.shadowMaxTranslate : difX,
-        y: difY > this.shadowMaxTranslate ? this.shadowMaxTranslate : difY
+      let shadowDiff = {
+        x: diffX > shadowMaxTranslate ? shadowMaxTranslate : diffX,
+        y: diffY > shadowMaxTranslate ? shadowMaxTranslate : diffY
       };
       let shadowInertia = {
-        x: shadowDifference.x * inertia,
-        y: shadowDifference.y * inertia
+        x: shadowDiff.x * inertia,
+        y: shadowDiff.y * inertia
       };
 
 
       let shadowTranslateX, shadowTranslateY;
-      if (difference.x > 0) shadowTranslateX = x1 - shadowInertia.x;
+      if (diff.x > 0) shadowTranslateX = x1 - shadowInertia.x;
       else shadowTranslateX = x1 + shadowInertia.x;
-      if (difference.y > 0) shadowTranslateY = y1 - shadowInertia.y;
+      if (diff.y > 0) shadowTranslateY = y1 - shadowInertia.y;
       else shadowTranslateY = y1 + shadowInertia.y;
 
       let grdShadow;
       grdShadow = ctx.createLinearGradient(w / 2, shadowTranslateY, w / 2, shadowTranslateY + h);
-      grdShadow.addColorStop(0, `rgba(${fill1}, .${i*2})`);
-      grdShadow.addColorStop(1, `rgba(${fill2}, .${i*2})`);
+      grdShadow.addColorStop(0, `rgba(${fill1}, .${i})`);
+      grdShadow.addColorStop(1, `rgba(${fill2}, .${i})`);
 
       ctx.fillStyle = grdShadow;
       ctx.fillRect(shadowTranslateX, shadowTranslateY, w, h);
-      // if (shadowDifference.x < 25000) {
-      //   console.log(shadowDifference);
-      // }
+      console.log(i);
     }
-
 
 
     //render main cursor squares
@@ -150,7 +153,7 @@ export default class _cursor {
 
   _mouseMove() {
     let self = this;
-    document.addEventListener('mousemove', function(e) {
+    document.addEventListener('mousemove', function (e) {
       self.cursor.x = e.pageX;
       self.cursor.y = e.pageY;
     });

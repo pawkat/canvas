@@ -10,13 +10,13 @@ export default class _cursor {
       {
         x: window.innerWidth / 2,
         y: window.innerHeight / 2,
-        w: 50,
-        h: 50,
+        w: 40,
+        h: 40,
         fill1: '255, 167, 12',
         fill2: '226, 7, 105',
         translate: true,
-        defaultTranslateX: 50,
-        defaultTranslateY: 50,
+        defaultTranslateX: 40,
+        defaultTranslateY: 40,
       },
       {
         x: window.innerWidth / 2,
@@ -29,12 +29,13 @@ export default class _cursor {
     ];
 
 
-    this.inertion = 0.1;
+    this.mainInertia = 0.1;
 
     this.shadowsQuantity = 4;
-    // this.shadowInertion = 0.0005;
-    this.shadowInertion = 0.001;
-    this.shadowInertionStep = 0.0009;
+    // this.shadowInertia = 0.0005;
+    this.shadowInertia = 0.001;
+    this.shadowInertiaStep = 0.0009;
+    this.shadowMaxTranslate = 7500;
     this.init();
   }
 
@@ -60,21 +61,21 @@ export default class _cursor {
     let self = this;
 
     function render() {
-      self._renderSquares();
+      self._initCursorRender();
       requestAnimationFrame(render);
     }
 
     requestAnimationFrame(render);
   }
 
-  _renderSquares() {
+  _initCursorRender() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.sqares.forEach((el, i) => {
-      this._renderSquare(el, i);
+      this._renderCursor(el, i);
     });
   }
 
-  _renderSquare(conf, i) {
+  _renderCursor(conf, i) {
     let ctx = this.ctx;
     let x = conf.x,
       y = conf.y,
@@ -83,46 +84,62 @@ export default class _cursor {
       fill1 = conf.fill1,
       fill2 = conf.fill2;
 
-    let differenceX = this.cursor.x - x;
-    let differenceY = this.cursor.y - y;
-    x += differenceX * this.inertion;
-    y += differenceY * this.inertion;
+    let difference = {
+      x: this.cursor.x - x,
+      y: this.cursor.y - y
+    };
+    // let differenceX = this.cursor.x - x;
+    // let differenceY = this.cursor.y - y;
+    x += difference.x * this.mainInertia;
+    y += difference.y * this.mainInertia;
     this.sqares[i].x = x;
     this.sqares[i].y = y;
     let x1 = x - w / 2;
     let y1 = y - h / 2;
     if (conf.translate) {
-      x1 += conf.defaultTranslateX - (differenceX * 0.3);
-      y1 += conf.defaultTranslateY - (differenceY * 0.3);
+      x1 += conf.defaultTranslateX - (difference.x * 0.3);
+      y1 += conf.defaultTranslateY - (difference.y * 0.3);
     }
 
+    //render shadow
     for (let i = this.shadowsQuantity; i > 0; i--) {
-      let selfInertion = (this.shadowInertion + (this.shadowsQuantity - i) * this.shadowInertionStep);
-      // console.log(selfInertion, differenceX, differenceX * selfInertion);
-      //square shadow 1
-      let grd1;
-      // let shadowTranslateX = x1 + w/10;
-      // let shadowTranslateY = y1 + h/10;
-      let shadow1TranslateX, shadow1TranslateY;
-      if (differenceX > 0) shadow1TranslateX = x1 - (Math.pow(differenceX, 2) * (this.shadowInertion + (this.shadowsQuantity - i) * this.shadowInertionStep));
-      else shadow1TranslateX = x1 + (Math.pow(differenceX, 2) * (this.shadowInertion + (this.shadowsQuantity - i) * this.shadowInertionStep));
-      if (differenceY > 0) shadow1TranslateY = y1 - (differenceY * differenceY * (this.shadowInertion + (this.shadowsQuantity - i) * this.shadowInertionStep));
-      else shadow1TranslateY = y1 + (Math.pow(differenceY, 2) * (this.shadowInertion + (this.shadowsQuantity - i) * this.shadowInertionStep));
-      grd1 = ctx.createLinearGradient(w / 2, shadow1TranslateY, w / 2, shadow1TranslateY + h);
-      grd1.addColorStop(0, `rgba(${fill1}, .2 )`);
-      grd1.addColorStop(1, `rgba(${fill2}, .2 )`);
-      // grd1.addColorStop(0, `rgba(0, 0, 0, .${i * 2 + 1})`);
-      // grd1.addColorStop(1, `rgba(0, 0, 0, .${i * 2 + 1})`);
+      let inertia = this.shadowInertia + (this.shadowsQuantity - i) * this.shadowInertiaStep;
 
-      ctx.fillStyle = grd1;
-      ctx.fillRect(shadow1TranslateX, shadow1TranslateY, w, h);
+      const difX = Math.pow(difference.x, 2);
+      const difY = Math.pow(difference.y, 2);
+
+      let shadowDifference = {
+        x: difX > this.shadowMaxTranslate ? this.shadowMaxTranslate : difX,
+        y: difY > this.shadowMaxTranslate ? this.shadowMaxTranslate : difY
+      };
+      let shadowInertia = {
+        x: shadowDifference.x * inertia,
+        y: shadowDifference.y * inertia
+      };
+
+
+      let shadowTranslateX, shadowTranslateY;
+      if (difference.x > 0) shadowTranslateX = x1 - shadowInertia.x;
+      else shadowTranslateX = x1 + shadowInertia.x;
+      if (difference.y > 0) shadowTranslateY = y1 - shadowInertia.y;
+      else shadowTranslateY = y1 + shadowInertia.y;
+
+      let grdShadow;
+      grdShadow = ctx.createLinearGradient(w / 2, shadowTranslateY, w / 2, shadowTranslateY + h);
+      grdShadow.addColorStop(0, `rgba(${fill1}, .${i*2})`);
+      grdShadow.addColorStop(1, `rgba(${fill2}, .${i*2})`);
+
+      ctx.fillStyle = grdShadow;
+      ctx.fillRect(shadowTranslateX, shadowTranslateY, w, h);
+      // if (shadowDifference.x < 25000) {
+      //   console.log(shadowDifference);
+      // }
     }
 
 
 
+    //render main cursor squares
 
-
-    //main square
     let grd;
     grd = ctx.createLinearGradient(w / 2, y1, w / 2, y1 + h);
     grd.addColorStop(0, `rgb(${fill1})`);

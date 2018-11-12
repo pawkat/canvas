@@ -5,18 +5,19 @@ import {TimelineMax} from 'gsap';
 export default class Logo {
   constructor($wrapper) {
     this.wrapper = $wrapper;
-    this.width = $wrapper.width();
-    this.height = $wrapper.height();
-    this.src = $wrapper.data('src');
+    // this.width = $wrapper.width();
+    // this.height = $wrapper.height();
+    // this.src = $wrapper.data('src');
 
     this.mouseOn = false;
 
-    this.app = new PIXI.Application(this.width, this.height, {transparent: true});
-    this.wrapper.append(this.app.view);
-    this.container = new PIXI.Container();
-    this.app.stage.addChild(this.container);
+    // this.app = new PIXI.Application(this.width, this.height, {transparent: true});
+    // this.wrapper.append(this.app.view);
+    // this.container = new PIXI.Container();
+    // this.app.stage.addChild(this.container);
 
-    this._load();
+    // this._load();
+    this._startAnimation();
   }
 
 
@@ -30,12 +31,12 @@ export default class Logo {
   }
 
   _startAnimation() {
-    this.bg = PIXI.Sprite.fromImage(this.src);
-    this.bg.width = this.width;
-    this.bg.height = this.height;
-    this.bg.position.x = 0;
-    this.bg.position.y = 0;
-    this.container.addChild(this.bg);
+    // this.bg = PIXI.Sprite.fromImage(this.src);
+    // this.bg.width = this.width;
+    // this.bg.height = this.height;
+    // this.bg.position.x = 0;
+    // this.bg.position.y = 0;
+    // this.container.addChild(this.bg);
 
 
     // this.TwistFilter = new filters.TwistFilter();
@@ -61,10 +62,10 @@ export default class Logo {
 
 
   _follow(x, y) {
-    let centerX = this.bg.width / 2;
-    let centerY = this.bg.height / 2;
-    if (x < centerX) x = x * -1;
-    if (y < centerY) y = y * -1;
+    // let centerX = this.bg.width / 2;
+    // let centerY = this.bg.height / 2;
+    // if (x < centerX) x = x * -1;
+    // if (y < centerY) y = y * -1;
     console.log(x, y);
     // this.bg.rotation = 0.2;
   }

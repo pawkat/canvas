@@ -24,15 +24,27 @@ if ($('#squares').length) {
   let squares = new Squares();
 }
 if ($('#cursor').length) {
-  let cursor = new Cursor();
+  let cursor = new Cursor($('.out'));
 }
 if ($('#waves').length) {
-  let waves = new Waves($('.js-image'));
+  let waves = new Waves({
+    wrapper: $('.js-image'),
+    images: [
+      'img/1.jpg',
+      'img/2.jpg',
+      'img/3.jpg'
+    ],
+    firstImage: 1
+  });
+  setTimeout(() => {
+    waves._goTo(2);
+  }, 2000);
+
 }
 if ($('.twist').length) {
   let waves = new Twist($('.twist'));
 }
-if ($('.twist').length) {
-  let logo = new Logo($('.logo'));
-}
+// if ($('.twist').length) {
+//   let logo = new Logo($('.logo'));
+// }
 

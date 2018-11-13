@@ -2,18 +2,33 @@ import 'pixi.js';
 import {TimelineMax} from 'gsap';
 
 export default class Waves {
-  constructor($wrapper) {
-    this.wrapper = $wrapper;
-    this.width = $wrapper.width();
-    this.height = $wrapper.height();
-    this.src = $wrapper.data('src');
+  constructor(conf) {
+    this.wrapper = conf.wrapper;
+
+    this.w = conf.wrapper.width();
+    this.h = conf.wrapper.height();
+    this.width = conf.wrapper.width() * 2;
+    this.height = conf.wrapper.height() * 2;
+
+    this.images = conf.images;
+    this.firstImage = conf.firstImage - 1 || 0;
+    this.activeImage = this.firstImage;
+    this.src = this.images[this.firstImage];
+
+
     this.mouseOn = false;
     this.animated = false;
 
     this.app = new PIXI.Application(this.width, this.height, {transparent: true});
     this.wrapper.append(this.app.view);
+
+    $(this.app.view).css('width', this.w);
+    $(this.app.view).css('height', this.h);
+
     this.container = new PIXI.Container();
     this.app.stage.addChild(this.container);
+
+
 
     this._load();
   }
@@ -29,32 +44,36 @@ export default class Waves {
   }
 
   _startAnimation() {
-    this.bg = PIXI.Sprite.fromImage(this.src);
-    this.bg.width = this.width;
-    this.bg.height = this.height;
-    this.bg.position.x = 0;
-    this.bg.position.y = 0;
-    this.container.addChild(this.bg);
+    this.images.forEach((el, i) => {
+      const imgConf = {
+        src: el,
+        i: i
+      };
+      this._addImage(imgConf);
+    });
 
-    this.bg2 = PIXI.Sprite.fromImage('img/2.jpg');
-    this.bg2.alpha = 0;
-    this.bg2.visible = false;
-    this.bg2.width = this.width;
-    this.bg2.height = this.height;
-    this.bg2.position.x = 0;
-    this.bg2.position.y = 0;
-    this.container.addChild(this.bg2);
-
-    this.displacementSprite = PIXI.Sprite.fromImage('img/displacement.jpg');
+    this.displacementSprite = PIXI.Sprite.fromImage('img/map.jpg');
     this.displacementSprite.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
     this.displacementFilter = new PIXI.filters.DisplacementFilter(this.displacementSprite);
-    this.displacementFilter.scale.set(1e4);
+    this.displacementFilter.scale.set(0);
     this.app.stage.addChild(this.displacementSprite);
     this.container.filters = [this.displacementFilter];
 
-    this._showImage();
-    this._hover();
-    this._click();
+    // this._showImage();
+    // this._hover();
+  }
+
+  _addImage(conf) {
+    let bg = PIXI.Sprite.fromImage(conf.src);
+    if (conf.i !== this.activeImage) {
+      bg.alpha = 0;
+      bg.visible = false;
+    }
+    bg.width = this.width;
+    bg.height = this.height;
+    bg.position.x = 0;
+    bg.position.y = 0;
+    this.container.addChild(bg);
   }
 
   _hover() {
@@ -93,14 +112,45 @@ export default class Waves {
     }
   }
 
-  _click() {
-    this.wrapper.on('click', () => {
-      console.log(this.container.children);
-      let tl = new TimelineMax();
-      tl.to(this.container.children[0], 1, {alpha: 0, visible: false})
-        .to(this.container.children[1], 1, {alpha: 1, visible: true});
-    });
+  // _click() {
+  //   this.wrapper.on('click', () => {
+  //     if (this.activeImage > 0 ){
+  //       this._goTo(2);
+  //     } else {
+  //       this._goTo(1);
+  //     }
+  //
+  //   });
+  // }
 
+  _goTo(i) {
+    let tl = new TimelineMax({
+      onComplete: () => {
+        this.activeImage = i;
+        // TweenMax.ticker.removeEventListener('tick', this._doWaves, this);
+        // let tl = new TimelineMax();
+        // tl.to(this.displacementFilter.scale, 0.5, {x: 1, y: 1});
+      }
+    });
+    tl
+      .to(this.container.children[this.activeImage], 1.5, {
+        alpha: 0,
+        visible: false,
+        onStart: () => {
+          TweenMax.ticker.addEventListener('tick', this._doWaves, this);
+          let tl = new TimelineMax();
+          tl.to(this.displacementFilter.scale, 1.5, {x: 50, y: 50});
+        }
+      })
+      .to(this.container.children[i], 1.5, {
+        alpha: 1,
+        visible: true,
+        onStart: () => {
+          TweenMax.ticker.removeEventListener('tick', this._doWaves, this);
+          let tl = new TimelineMax();
+          tl.to(this.displacementFilter.scale, 1.5, {x: 1, y: 1});
+        }
+      });
   }
 
 }

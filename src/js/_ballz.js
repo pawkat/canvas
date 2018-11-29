@@ -25,7 +25,7 @@ export default class Ballz {
     ctx.fill();
     ctx.fillStyle = this.color;
     ctx.fillText(square.text, square.x + 25, square.y + 35);
-    console.log(square.text);
+    // console.log(square.text);
   }
   _drawSquare(){
     function getRandomInt(max) {

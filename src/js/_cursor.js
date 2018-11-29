@@ -1,12 +1,15 @@
 export default class _cursor {
   constructor($wrapper) {
     this.$wrapper = $wrapper;
-    this.canvas = document.getElementById('cursor');
+    this.canvas = document.createElement('canvas');
+    this.canvas.classList.add('cursor');
     this.ctx = this.canvas.getContext('2d');
+    this.$wrapper.append(this.canvas);
     this.cursor = {
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2
+      x: window.innerWidth / 2 + 185,
+      y: window.innerHeight / 2 + 70
     };
+    this.scrollTop = (window.pageYOffset || document.scrollTop || 0) - (document.clientTop || 0);
     this.sqares = [
       {
         x: window.innerWidth / 2,
@@ -28,13 +31,17 @@ export default class _cursor {
         defaultTranslateX: 20,
         defaultTranslateY: 20,
         delay: true,
-        shadowMaxTranslate: 7500,
-        showHint: true
+        shadowMaxTranslate: 14000,
+        showHint: true,
+        changeFill: true,
+        defaultFill1: '255, 167, 12',
+        defaultFill2: '226, 7, 105',
       },
 
     ];
 
-    this.mainInertia = 0.1;
+    this.mainInertia = 0.2;
+    // this.mainInertia = 0.1;
     this.shadowsQuantity = 5;
     this.shadowInertia = 0.001;
     this.shadowInertiaStep = 0.0009;
@@ -46,9 +53,12 @@ export default class _cursor {
 
     this.words = false;
     this.hint = false;
+    this.hintVisible = false;
     this.maxHintSize = 80;
     this.hintPadding = 20;
     this.minHintSize = 40;
+
+    this.changeFillBlock = false;
 
 
     this.init();
@@ -59,6 +69,7 @@ export default class _cursor {
     this._changeSize();
     this._mouseMove();
     this._render();
+    this._scroll();
   }
 
   _setSize() {
@@ -91,19 +102,50 @@ export default class _cursor {
   }
 
   _renderCursor(conf, i) {
-    const fill1 = conf.fill1,
-      fill2 = conf.fill2,
-      translate = conf.translate,
+    const translate = conf.translate,
       defaultTranslateX = conf.defaultTranslateX,
       defaultTranslateY = conf.defaultTranslateY,
-      shadowMaxTranslate = conf.shadowMaxTranslate;
+      shadowMaxTranslate = conf.shadowMaxTranslate,
+      changeFill = conf.changeFill;
 
 
     let x = conf.x,
       y = conf.y,
       h = conf.w,
-      w = conf.h;
+      w = conf.h,
+      fill1 = conf.fill1,
+      fill2 = conf.fill2,
+      defaultFill1 = conf.defaultFill1,
+      defaultFill2 = conf.defaultFill2;
 
+    //change fill
+    if (changeFill) {
+      let square = this.sqares[i];
+      if (this.changeFillBlock.length && this.changeFillBlock.data('fill1') && this.changeFillBlock.data('fill2')) {
+        if (this.changeFillBlock.data('fill1') !== fill1 || this.changeFillBlock.data('fill2') !== fill2) {
+          const conf = {
+            fill1,
+            fill2,
+            newFill1: this.changeFillBlock.data('fill1'),
+            newFill2: this.changeFillBlock.data('fill2')
+          };
+          const newFill = this._newFill(conf);
+          // console.log(newFill);
+          square.fill1 = newFill.fill1;
+          square.fill2 = newFill.fill2;
+        }
+      } else if (defaultFill1 !== fill1 || defaultFill2 !== fill2) {
+        const conf = {
+          fill1,
+          fill2,
+          newFill1: defaultFill1,
+          newFill2: defaultFill2
+        };
+        const newFill = this._newFill(conf);
+        square.fill1 = newFill.fill1;
+        square.fill2 = newFill.fill2;
+      }
+    }
 
     let diff = {
       x: this.cursor.x - x,
@@ -217,20 +259,20 @@ export default class _cursor {
         this.hintSize = this.maxHintSize > wordsH ? this.maxHintSize : wordsH;
         this.hintSize += this.hintPadding;
         if (conf.w !== this.hintSize) {
-          this.sqares[conf.i].w += 2;
-          this.hintVisible = true;
+          this.sqares[conf.i].w += 3;
         }
         if (conf.h !== this.hintSize) {
-          this.sqares[conf.i].h += 2;
+          this.sqares[conf.i].h += 3;
         }
+        if (conf.w === this.hintSize && conf.h === this.hintSize) this.hintVisible = true;
       }
     } else if (!this.hint && !this.words) {
       if (conf.w !== this.minHintSize) {
-        this.sqares[conf.i].w -= 2;
+        this.sqares[conf.i].w -= 3;
         this.hintVisible = false;
       }
       if (conf.h !== this.minHintSize) {
-        this.sqares[conf.i].h -= 2;
+        this.sqares[conf.i].h -= 3;
       }
     }
   }
@@ -250,7 +292,7 @@ export default class _cursor {
     let textY = conf.y1 + (this.hintSize / 2) - ((words.length - 1) * (this.fontLH / 2));
     for (let i = 0; i < words.length; i++) {
       line = words[i];
-      ctx.fillText(line, conf.x1 + (conf.w / 2), textY);
+      if (this.hintVisible) ctx.fillText(line, conf.x1 + (conf.w / 2), textY);
       textY += this.fontLH;
 
     }
@@ -271,8 +313,50 @@ export default class _cursor {
       this.cursor.x = e.pageX;
       this.cursor.y = e.pageY;
       this.hint = $(e.target).data('hint') ? $(e.target).data('hint') : false;
+      this.changeFillBlock = $(e.target).data('change-fill') ? $(e.target) : $(e.target).closest('[data-change-fill]');
       if (!$(e.target).data('hint')) this.words = false;
     });
+  }
+
+  _scroll() {
+    document.addEventListener('scroll', () => {
+      let length = (window.pageYOffset || document.scrollTop) - (document.clientTop || 0);
+      let y = length - this.scrollTop;
+      this.cursor.y += y || 0;
+      this.scrollTop = length;
+    });
+  }
+
+  _numArray(str) {
+    let arr = [];
+    str.split(',').forEach((el) => {
+      const num = +el;
+      arr.push(num);
+    });
+    return arr;
+  }
+
+  _toArray(arr1, arr2) {
+    let tempArr = [];
+    arr1.forEach((el, i) => {
+      if (el > arr2[i]) el--;
+      else el++;
+      tempArr.push(el);
+    });
+    return tempArr.join();
+  }
+
+  _newFill(conf) {
+    const
+      currentFill1 = this._numArray(conf.fill1),
+      currentFill2 = this._numArray(conf.fill2),
+      updFill1 = this._numArray(conf.newFill1),
+      updFill2 = this._numArray(conf.newFill2);
+    let result = {
+      fill1: this._toArray(currentFill1, updFill1),
+      fill2: this._toArray(currentFill2, updFill2)
+    };
+    return result;
   }
 
 

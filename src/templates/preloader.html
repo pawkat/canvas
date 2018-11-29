@@ -1,14 +1,20 @@
 ---
-title: Squares page
+title: Preloader page
+bodyMod: is-cursor
 ---
 {% extends "layouts/_layout.html" %}
 
 {% block content %}
 
-<div class="squares">
-  <canvas id="squares"></canvas>
-</div>
 
+<div class="preloader js-sequence">
+  <div class="preloader__inner js-preloader">
+    <div class="preloader__content js-preloader-content">
+      <div class="preloader__content-bg js-preloader-content-bg"></div>
+      <div class="preloader__text">whiteweb</div>
+    </div>
+  </div>
+</div>
 
 
 

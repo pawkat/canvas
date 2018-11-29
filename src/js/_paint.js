@@ -134,7 +134,7 @@ export default class Paint {
 
   _back() {
     let lastUp = this.memory.lastIndexOf('mouseup');
-    console.log(this.memory, lastUp);
+    // console.log(this.memory, lastUp);
     if (lastUp === this.memory.length - 1) {
       this.memory.splice(lastUp, 1);
       lastUp = this.memory.lastIndexOf('mouseup');

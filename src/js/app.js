@@ -7,8 +7,11 @@ import Waves from './_waves';
 import Portfolio from './_portfolio';
 import Preloader from './_preloader';
 import _logo from './_logo';
+import swiperSlider from "./_swiperSlider";
+import map from "./_map";
+// obliquePictures();
+
 // import dat from 'dat.GUI';
-//
 
 if ($('#triangles').length) {
   let canvasTriangles = new Triangles;
@@ -90,3 +93,9 @@ const preloader = new Preloader({
     'img/sequence/01_00121.png',
   ]
 });
+
+swiperSlider();
+
+if ($('.js-map').length){
+  map();
+}

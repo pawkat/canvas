@@ -1,0 +1,71 @@
+---
+title: Swiper page
+<!--bodyMod: is-cursor-->
+---
+{% extends "layouts/_layout.html" %}
+
+{% block content %}
+
+
+<!-- Slider main container -->
+<div class="swiper-container js-slider">
+  <!-- Additional required wrapper -->
+  <div class="swiper-wrapper">
+    <!-- Slides -->
+    <div class="swiper-slide">Slide 1</div>
+    <div class="swiper-slide">Slide 2</div>
+    <div class="swiper-slide">Slide 3</div>
+    <div class="swiper-slide">Slide 4</div>
+    <div class="swiper-slide">Slide 5</div>
+    <div class="swiper-slide">Slide 6</div>
+    <div class="swiper-slide">Slide 7</div>
+    <div class="swiper-slide">Slide 8</div>
+    <div class="swiper-slide">Slide 9</div>
+    <div class="swiper-slide">Slide 10</div>
+  </div>
+  <!-- If we need pagination -->
+  <div class="swiper-pagination js-slider-pagination"></div>
+
+  <!-- If we need navigation buttons -->
+  <div class="swiper-button-prev js-slider-prev"></div>
+  <div class="swiper-button-next js-slider-next"></div>
+
+  <!-- If we need scrollbar -->
+  <div class="swiper-scrollbar"></div>
+</div>
+
+<div class="swiper-container js-slider-vertical swiper_vertical">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide">Slide 1</div>
+    <div class="swiper-slide">Slide 2</div>
+    <div class="swiper-slide">Slide 3</div>
+    <div class="swiper-slide">Slide 4</div>
+    <div class="swiper-slide">Slide 5</div>
+    <div class="swiper-slide">Slide 6</div>
+    <div class="swiper-slide">Slide 7</div>
+    <div class="swiper-slide">Slide 8</div>
+    <div class="swiper-slide">Slide 9</div>
+    <div class="swiper-slide">Slide 10</div>
+  </div>
+  <div class="swiper-pagination js-slider-pagination"></div>
+</div>
+<div class="swiper-container js-slider-multiple">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide">Slide 1</div>
+    <div class="swiper-slide">Slide 2</div>
+    <div class="swiper-slide">Slide 3</div>
+    <div class="swiper-slide">Slide 4</div>
+    <div class="swiper-slide">Slide 5</div>
+    <div class="swiper-slide">Slide 6</div>
+    <div class="swiper-slide">Slide 7</div>
+    <div class="swiper-slide">Slide 8</div>
+    <div class="swiper-slide">Slide 9</div>
+    <div class="swiper-slide">Slide 10</div>
+  </div>
+  <div class="swiper-pagination js-slider-pagination"></div>
+
+
+</div>
+
+
+{% endblock %}

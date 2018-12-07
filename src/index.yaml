@@ -11,3 +11,8 @@ PageList:
   ready: 50
 - file: whiteweb.html
   ready: 50
+- file: swiper.html
+  ready: 50
+
+- file: map.html
+  ready: 50

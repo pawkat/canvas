@@ -9,6 +9,7 @@ import Preloader from './_preloader';
 import _logo from './_logo';
 import swiperSlider from "./_swiperSlider";
 import map from "./_map";
+import smiles from "./_smiles";
 // obliquePictures();
 
 // import dat from 'dat.GUI';
@@ -98,4 +99,7 @@ swiperSlider();
 
 if ($('.js-map').length){
   map();
+}
+if ($('.js-smile')){
+  smiles();
 }

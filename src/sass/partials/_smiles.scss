@@ -1,0 +1,49 @@
+.smile > g {
+	opacity: 0;
+}
+.smile > g.is-active {
+	opacity: 1;
+}
+
+
+
+.bg{
+	height: 100vh;
+	min-width: 199vh;
+	width: 100%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 0;
+    display: flex;
+    flex-direction: column;
+}
+.bg>.smile{
+	display: none;
+}
+.bg__row{
+	display: flex;
+}
+
+.bg-cont {
+	width: 100%;
+	height: 100vh;
+	position: relative;
+	overflow: hidden;
+}
+
+.bg svg {
+	display: inline-block;
+}
+body {
+	margin: 0;
+}
+.bg__smile{
+    width: 8.33333%;
+    height: 16.66667vh;
+}
+.smile{
+    width: 100%;
+    height: 100%;
+}
